@@ -1,11 +1,13 @@
-from flask import Flask, request, jsonify, Response
-from flask_restful import Resource, Api
 from json import dumps
+
+from flask import Flask, Response, jsonify, request
+from flask_restful import Api, Resource
 from twitter_api.client import HashtagClient, ScreenUserClient
 from utils import util
 
 app = Flask(__name__)
 api = Api(app)
+
 
 @app.route("/", methods=['GET'])
 def index():
@@ -15,7 +17,8 @@ def index():
                 "/users/{name}: To Get list of tweets on user {name}'s feet\n"\
                 "limit: optional parameter, number of tweet to retrieve, " \
                 "maximum is 200, default 30 \n"
-    return help_text
+    return jsonify(help_text)
+
 
 class HashtagResource(Resource):
     def get(self, tag):
@@ -32,7 +35,6 @@ class UserTimelineResource(Resource):
         client = ScreenUserClient(app.logger)
         response = client.get(user, limit)
         return util.make_response(request.headers, response)
-
 
 
 api.add_resource(HashtagResource, '/hashtags/<tag>')

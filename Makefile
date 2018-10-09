@@ -4,21 +4,30 @@ VERSION := 0.0.0
 .PHONY: check
 check:
 	pep8 $(NAME)
-
+	pep8 twitter_api
+	pep8 utils
 env:
 	virtualenv  --python=python3.6 env
 	env/bin/pip install -r requirement.txt
+	env/bin/python setup.py develop
 
 .PHONY: test
 test: env
-	env/bin/py.test --verbose $(NAME)
+	export TWITTER_ACCESS_KEY=ABC
+	export TWITTER_ACCESS_SECRET=DEF
+	export TWITTER_CONSUMER_KEY=MNG
+	export TWITTER_CONSUMER_SECRET=GHK
+	env/bin/py.test -v -l --verbose unittest
 
 .PHONY: clean
 clean:
 	find . -name '*.py[oc]' -delete
 	rm -rf *.egg-info
 	rm -rf env
-	export TWITTER_TOKEN=""
+	export TWITTER_ACCESS_KEY=""
+	export TWITTER_ACCESS_SECRET=""
+	export TWITTER_CONSUMER_KEY=""
+	export TWITTER_CONSUMER_SECRET=""
 
 .PHONY: run
 run:
